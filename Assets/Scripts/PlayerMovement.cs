@@ -1,22 +1,97 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance
+    {
+        get;
+        private set;
+    }
+    public event EventHandler<OnSelectedCounterChangeEventArgs> OnSelectedCounterChanged;
+    public class OnSelectedCounterChangeEventArgs : EventArgs
+    {
+        public ClearCounter selectedCounter;
+    }
     [SerializeField] private float _movementSpeed = 10f;
     [SerializeField] private GameInput _gameInput;
 
+    [SerializeField] private float _playerRadius = 0.7f;
+    [SerializeField] private float _playerHeight = 2f;
+    [SerializeField] private float _interactDistance = 2f;
+    [SerializeField] private LayerMask _countersLayerMask;
+
+    private Vector3 _lastInteractDirection;
+
     private MovementState _movementState = MovementState.idle;
+    private ClearCounter _selectedCounter;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("THIS SHOUDL NOT HAPPEND ONlY ONE PLAYER");
+        }
+        Instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        _gameInput.OnInteractAction += GameInput_OnInteractionAction;
+    }
 
+    private void GameInput_OnInteractionAction(object sender, System.EventArgs e)
+    {
+        if (_selectedCounter)
+        {
+            _selectedCounter.Interact();
+        }
     }
 
     // Update is called once per frame
     void Update()
+    {
+        HandleMovement();
+        HandleInteraction();
+    }
+
+    private void HandleInteraction()
+    {
+        Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
+
+        Vector3 transformVector3d = new(inputVector.x, 0f, inputVector.y);
+
+        if (transformVector3d != Vector3.zero)
+        {
+            _lastInteractDirection = transformVector3d;
+        }
+        bool hit = Physics.Raycast(transform.position, _lastInteractDirection, out RaycastHit raycastHit, _interactDistance, _countersLayerMask);
+
+        if (hit)
+        {
+            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            {
+                // has ClearCounter
+                if (clearCounter != _selectedCounter)
+                {
+                    SetSelectedCounter(clearCounter);
+                }
+            }
+            else
+            {
+                SetSelectedCounter(null);
+            }
+        }
+        else
+        {
+            SetSelectedCounter(null);
+        }
+    }
+
+    private void HandleMovement()
     {
         Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
 
@@ -60,11 +135,15 @@ public class PlayerMovement : MonoBehaviour
 
     private bool CanMove(Vector3 transformVector, float moveDistance)
     {
-        float playerRadius = 0.7f;
-        float playerHeight = 2f;
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, transformVector, moveDistance);
+        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * _playerHeight, _playerRadius, transformVector, moveDistance);
 
         return canMove;
+    }
+
+    private void SetSelectedCounter(ClearCounter clearCounter)
+    {
+        _selectedCounter = clearCounter;
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangeEventArgs { selectedCounter = _selectedCounter });
     }
 
     public bool IsWalking()
