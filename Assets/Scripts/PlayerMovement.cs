@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     public event EventHandler<OnSelectedCounterChangeEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangeEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public BaseCounter selectedCounter;
     }
     [SerializeField] private float _movementSpeed = 10f;
     [SerializeField] private GameInput _gameInput;
@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     private Vector3 _lastInteractDirection;
 
     private MovementState _movementState = MovementState.idle;
-    private ClearCounter _selectedCounter;
+    private BaseCounter _selectedCounter;
     private KitchenObject _kitchenObject;
 
     private void Awake()
@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     void Start()
     {
         _gameInput.OnInteractAction += GameInput_OnInteractionAction;
+        _gameInput.OnInteractAlternateAction += GameInput_OnInteractionAlternateAction;
     }
 
     private void GameInput_OnInteractionAction(object sender, System.EventArgs e)
@@ -50,6 +51,14 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
         if (_selectedCounter)
         {
             _selectedCounter.Interact(this);
+        }
+    }
+
+    private void GameInput_OnInteractionAlternateAction(object sender, System.EventArgs e)
+    {
+        if (_selectedCounter)
+        {
+            _selectedCounter.InteractAlternate(this);
         }
     }
 
@@ -74,12 +83,12 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 
         if (hit)
         {
-            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
                 // has ClearCounter
-                if (clearCounter != _selectedCounter)
+                if (baseCounter != _selectedCounter && baseCounter.CanInteract(this))
                 {
-                    SetSelectedCounter(clearCounter);
+                    SetSelectedCounter(baseCounter);
                 }
             }
             else
@@ -107,7 +116,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
         {
             // check if can move X
             Vector3 moveX = new Vector3(transformVector3d.x, 0f, 0f).normalized;
-            canMove = CanMove(moveX, moveDistance);
+            canMove = moveX.x != 0 && CanMove(moveX, moveDistance);
             if (canMove)
             {
                 transformVector3d = moveX;
@@ -116,7 +125,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
             {
                 // check if can move Z
                 Vector3 moveZ = new Vector3(0f, 0f, transformVector3d.z).normalized;
-                canMove = CanMove(moveZ, moveDistance);
+                canMove = moveZ.z != 0 && CanMove(moveZ, moveDistance);
                 if (canMove)
                 {
                     transformVector3d = moveZ;
@@ -142,9 +151,9 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
         return canMove;
     }
 
-    private void SetSelectedCounter(ClearCounter clearCounter)
+    private void SetSelectedCounter(BaseCounter baseCounter)
     {
-        _selectedCounter = clearCounter;
+        _selectedCounter = baseCounter;
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangeEventArgs { selectedCounter = _selectedCounter });
     }
 

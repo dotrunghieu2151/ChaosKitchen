@@ -2,67 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClearCounter : MonoBehaviour, IKitchenObjectParent
+public class ClearCounter : BaseCounter
 {
-    [SerializeField] private Transform _topPoint;
+
     [SerializeField] private KitchenObjectSO _kitchenObjectSO;
 
-    private KitchenObject _kitchenObject;
-
-    // Start is called before the first frame update
-    void Start()
+    public override bool CanInteract(IKitchenObjectParent parent)
     {
-
+        return !HasKitchenObject() && parent.HasKitchenObject();
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Interact(IKitchenObjectParent parent)
     {
-
-    }
-
-    public void Interact(IKitchenObjectParent parent)
-    {
-        if (!_kitchenObject)
+        if (!HasKitchenObject())
         {
-            Transform kitchenObjectTransform = Instantiate(_kitchenObjectSO.prefab, _topPoint);
-
-            kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
+            if (parent.HasKitchenObject())
+            {
+                // player carrying sth
+                parent.GetKitchenObject().SetParent(this);
+            }
+            else
+            {
+                //player has nothing
+            }
         }
         else
         {
-            // give object to the player
-            _kitchenObject.GetComponent<KitchenObject>().SetParent(parent);
+            if (parent.HasKitchenObject())
+            {
+                // player
+            }
+            else
+            {
+                // give to the player
+                GetKitchenObject().SetParent(parent);
+            }
         }
-    }
-
-    public Transform GetTopPoint()
-    {
-        return _topPoint;
-    }
-
-    public void SetKitchenObject(KitchenObject kitchenObject)
-    {
-        _kitchenObject = kitchenObject;
-    }
-
-    public KitchenObject GetKitchenObject()
-    {
-        return _kitchenObject;
-    }
-
-    public void ClearKitchenObject()
-    {
-        _kitchenObject = null;
-    }
-
-    public bool HasKitchenObject()
-    {
-        return _kitchenObject != null;
-    }
-
-    public Transform GetChildAnchor()
-    {
-        return GetTopPoint();
     }
 }
