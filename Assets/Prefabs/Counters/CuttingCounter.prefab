@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 1557237956037147653}
   - component: {fileID: 8961025939752444901}
   - component: {fileID: 6008123269192484492}
+  - component: {fileID: 8350699012303332919}
   m_Layer: 6
   m_Name: ProgressBarUI
   m_TagString: Untagged
@@ -209,6 +210,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _barImage: {fileID: 3564516986166721448}
   _cuttingCounter: {fileID: 7233781265014704902}
+--- !u!114 &8350699012303332919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6988120911923646425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38967270c256441debfd704b4ae72ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7339790901740703902
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,13 +247,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7339790901740703902}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.99979717, z: -0, w: -0.02014375}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 524343217313789416}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -182.308, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -469,7 +482,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4589716710238282922, guid: d72bee846803d074784ffb8f64e993ca,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4809128868276339886}
   m_SourcePrefab: {fileID: 100100000, guid: d72bee846803d074784ffb8f64e993ca, type: 3}
 --- !u!4 &3932409472508955440 stripped
 Transform:
@@ -477,6 +494,25 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 658451967041499035}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3932409472508955441 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4589716710238282922, guid: d72bee846803d074784ffb8f64e993ca,
+    type: 3}
+  m_PrefabInstance: {fileID: 658451967041499035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4809128868276339886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3932409472508955441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5138c49ce89fa4d23a3d8678e1ebcec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cuttingCounter: {fileID: 7233781265014704902}
 --- !u!1001 &8614661656743400003
 PrefabInstance:
   m_ObjectHideFlags: 0
