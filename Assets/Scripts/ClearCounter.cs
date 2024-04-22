@@ -9,7 +9,8 @@ public class ClearCounter : BaseCounter
 
     public override bool CanInteract(IKitchenObjectParent parent)
     {
-        return !HasKitchenObject() && parent.HasKitchenObject();
+        return (!HasKitchenObject() && parent.HasKitchenObject()) ||
+            (HasKitchenObject() && !parent.HasKitchenObject());
     }
 
     public override void Interact(IKitchenObjectParent parent)

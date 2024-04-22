@@ -5,7 +5,14 @@ using UnityEngine;
 
 public class CuttingCounter : BaseCounter
 {
+    public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
+    public class OnProgressChangedEventArgs : EventArgs
+    {
+        public float progressNormalized;
+    }
     [SerializeField] private RecipeSO[] _recipesSO;
+
+    private int _cuttingProgress;
 
     public override bool CanInteract(IKitchenObjectParent parent)
     {
@@ -23,10 +30,12 @@ public class CuttingCounter : BaseCounter
     {
         if (!HasKitchenObject())
         {
-            if (parent.HasKitchenObject() && HasRecipeInput(parent.GetKitchenObject().GetKitchenObjectSO()))
+            RecipeSO recipe = GetRecipeSOWithInput(parent.GetKitchenObject().GetKitchenObjectSO());
+            if (parent.HasKitchenObject() && recipe != null)
             {
                 // player carrying sth
                 parent.GetKitchenObject().SetParent(this);
+                UpdateProgress(0, recipe.cuttingProgressMax);
             }
             else
             {
@@ -51,38 +60,56 @@ public class CuttingCounter : BaseCounter
     {
         if (HasKitchenObject())
         {
-            KitchenObjectSO recipeOutput = GetRecipeOutput(GetKitchenObject().GetKitchenObjectSO());
-            if (!parent.HasKitchenObject() && recipeOutput != null)
+            RecipeSO recipe = GetRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+            if (recipe == null)
+            {
+                return;
+            }
+            UpdateProgress(_cuttingProgress + 1, recipe.cuttingProgressMax);
+
+            if (_cuttingProgress != recipe.cuttingProgressMax)
+            {
+                return;
+            }
+
+
+            if (!parent.HasKitchenObject() && recipe.output != null)
             {
                 GetKitchenObject().DestroySelf();
-                KitchenObject.SpawnKitchenObject(recipeOutput, this);
+                KitchenObject.SpawnKitchenObject(recipe.output, this);
             }
+
         }
+    }
+
+    private void UpdateProgress(int progress, int max)
+    {
+        _cuttingProgress = progress;
+        OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs { progressNormalized = (float)_cuttingProgress / max });
     }
 
     private KitchenObjectSO GetRecipeOutput(KitchenObjectSO inputKitchenObjectSO)
     {
-        foreach (RecipeSO recipe in _recipesSO)
-        {
-            if (recipe.input == inputKitchenObjectSO)
-            {
-                return recipe.output;
-            }
-        }
-        return null;
+        return GetRecipeSOWithInput(inputKitchenObjectSO)?.output;
     }
 
     private bool HasRecipeInput(KitchenObjectSO inputKitchenObjectSO)
+    {
+        RecipeSO recipe = GetRecipeSOWithInput(inputKitchenObjectSO);
+        return recipe != null;
+    }
+
+    private RecipeSO GetRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO)
     {
         foreach (RecipeSO recipe in _recipesSO)
         {
             if (recipe.input == inputKitchenObjectSO)
             {
-                return true;
+                return recipe;
             }
         }
 
-        return false;
+        return null;
     }
 
 
