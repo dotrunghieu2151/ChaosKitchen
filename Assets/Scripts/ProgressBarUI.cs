@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
+    [SerializeField] private GameObject hasProgressGameObj;
     [SerializeField] private Image _barImage;
-    [SerializeField] private CuttingCounter _cuttingCounter;
+    private IHasProgress _hasProgress;
     // Start is called before the first frame update
 
     private float _targetProgress;
@@ -15,7 +16,12 @@ public class ProgressBarUI : MonoBehaviour
 
     private void Start()
     {
-        _cuttingCounter.OnProgressChanged += (sender, args) =>
+        _hasProgress = hasProgressGameObj.GetComponent<IHasProgress>();
+        if (_hasProgress == null)
+        {
+            Debug.LogError("GameObject " + hasProgressGameObj + " should implement IHasProgress");
+        }
+        _hasProgress.OnProgressChanged += (sender, args) =>
         {
             _startProgress = _barImage.fillAmount;
             _targetProgress = args.progressNormalized;
