@@ -10,7 +10,11 @@ public class ClearCounter : BaseCounter
     public override bool CanInteract(IKitchenObjectParent parent)
     {
         return (!HasKitchenObject() && parent.HasKitchenObject()) ||
-            (HasKitchenObject() && !parent.HasKitchenObject());
+            (HasKitchenObject() && !parent.HasKitchenObject()) ||
+            (
+                HasKitchenObject() && parent.GetKitchenObject() is PlateKitchenObject
+            ) ||
+            GetKitchenObject() is PlateKitchenObject && parent.GetKitchenObject();
     }
 
     public override void Interact(IKitchenObjectParent parent)
@@ -31,7 +35,24 @@ public class ClearCounter : BaseCounter
         {
             if (parent.HasKitchenObject())
             {
-                // player
+                // player carrying sth, if it is a plate then
+                if (parent.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+                {
+                    // player holding a plate, place onto the plate
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    };
+                }
+                else if (GetKitchenObject().TryGetPlate(out plateKitchenObject))
+                {
+                    // counter has a plate
+                    if (plateKitchenObject.TryAddIngredient(parent.GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        parent.GetKitchenObject().DestroySelf();
+                    };
+
+                }
             }
             else
             {

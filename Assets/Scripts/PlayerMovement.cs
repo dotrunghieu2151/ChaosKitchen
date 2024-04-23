@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     [SerializeField] private float _movementSpeed = 10f;
     [SerializeField] private GameInput _gameInput;
 
-    [SerializeField] private float _playerRadius = 0.7f;
+    [SerializeField] private float _playerRadius = 0.2f;
     [SerializeField] private float _playerHeight = 2f;
     [SerializeField] private float _interactDistance = 2f;
     [SerializeField] private LayerMask _countersLayerMask;

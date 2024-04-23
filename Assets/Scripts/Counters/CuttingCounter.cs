@@ -19,7 +19,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
         }
         else
         {
-            return !parent.HasKitchenObject();
+            return !parent.HasKitchenObject() || parent.GetKitchenObject() is PlateKitchenObject;
         }
     }
 
@@ -44,6 +44,14 @@ public class CuttingCounter : BaseCounter, IHasProgress
             if (parent.HasKitchenObject())
             {
                 // player
+                if (parent.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+                {
+                    // player holding a plate, place onto the plate
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    };
+                }
             }
             else
             {
