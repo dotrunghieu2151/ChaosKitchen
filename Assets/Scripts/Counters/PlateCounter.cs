@@ -21,7 +21,7 @@ public class PlateCounter : BaseCounter
         if (_plateSpawnTimer >= _plateSpawnInterval)
         {
             _plateSpawnTimer = 0f;
-            if (_platesSpawnCount <= _platesSpawnMaxCount)
+            if (_platesSpawnCount < _platesSpawnMaxCount)
             {
                 // spawn visuals instead of plateSO
                 OnPlateSpawned?.Invoke(this, System.EventArgs.Empty);

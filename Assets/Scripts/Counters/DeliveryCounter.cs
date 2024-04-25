@@ -15,7 +15,7 @@ public class DeliveryCounter : BaseCounter
 
     public override void Interact(IKitchenObjectParent parent)
     {
-        if (parent.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+        if (parent.GetKitchenObject() && parent.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
         {
             DeliveryManager.Instance.DeliverRecipe(plateKitchenObject);
             plateKitchenObject.DestroySelf();
