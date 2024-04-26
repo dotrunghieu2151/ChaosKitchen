@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CuttingCounter : BaseCounter, IHasProgress
 {
+    public static event EventHandler OnAnyCut;
     public event EventHandler OnCut;
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     [SerializeField] private RecipeSO[] _recipesSO;
@@ -94,6 +95,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
         if (_cuttingProgress > 0 && _cuttingProgress <= max)
         {
             OnCut?.Invoke(this, System.EventArgs.Empty);
+            OnAnyCut?.Invoke(this, System.EventArgs.Empty);
         }
     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 {
+    public static event EventHandler OnPlayerPickup;
     public static PlayerMovement Instance
     {
         get;
@@ -165,6 +166,10 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         _kitchenObject = kitchenObject;
+        if (_kitchenObject != null)
+        {
+            OnPlayerPickup?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject()

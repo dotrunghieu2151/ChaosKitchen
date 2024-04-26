@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TrashCounter : BaseCounter
 {
-
+    public static event EventHandler OnAnyObjectTrashed;
     public override bool CanInteract(IKitchenObjectParent parent)
     {
         return parent.HasKitchenObject();
@@ -15,6 +16,7 @@ public class TrashCounter : BaseCounter
         if (parent.HasKitchenObject())
         {
             parent.GetKitchenObject().DestroySelf();
+            OnAnyObjectTrashed?.Invoke(this, System.EventArgs.Empty);
         }
     }
 }

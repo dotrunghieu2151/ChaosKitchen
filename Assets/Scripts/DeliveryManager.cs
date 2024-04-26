@@ -7,6 +7,13 @@ public class DeliveryManager : MonoBehaviour
 {
     public event EventHandler OnRecipeSpawned;
     public event EventHandler OnRecipeDelivered;
+    public event EventHandler<OnRecipeDeliveryArgs> OnRecipeSuccess;
+    public event EventHandler<OnRecipeDeliveryArgs> OnRecipeFailed;
+
+    public class OnRecipeDeliveryArgs : EventArgs
+    {
+        public DeliveryCounter deliveryCounter;
+    }
 
     public static DeliveryManager Instance { get; private set; }
     [SerializeField] private DeliveryRecipeListSO _deliveryListSO;
@@ -39,7 +46,7 @@ public class DeliveryManager : MonoBehaviour
         }
     }
 
-    public void DeliverRecipe(PlateKitchenObject plate)
+    public void DeliverRecipe(PlateKitchenObject plate, DeliveryCounter deliveryCounter)
     {
         for (int i = 0; i < _waitingRecipeList.Count; ++i)
         {
@@ -48,20 +55,27 @@ public class DeliveryManager : MonoBehaviour
             if (waitingRecipe.kitchenObjectSOList.Count == plate.GetKitchenObjectSOList().Count)
             {
                 // same number of Ingredients
+                bool hasSameIngredients = true;
                 foreach (KitchenObjectSO repiceKitchenObjectSO in waitingRecipe.kitchenObjectSOList)
                 {
                     if (!plate.GetKitchenObjectSOList().Find(e => e == repiceKitchenObjectSO))
                     {
-                        return;
+                        hasSameIngredients = false;
+                        break;
                     }
                 }
-
-                // all ingredients match
-                _waitingRecipeList.RemoveAt(i);
-                OnRecipeDelivered?.Invoke(this, EventArgs.Empty);
-                return;
+                if (hasSameIngredients)
+                {
+                    // all ingredients match
+                    _waitingRecipeList.RemoveAt(i);
+                    OnRecipeDelivered?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccess?.Invoke(this, new OnRecipeDeliveryArgs { deliveryCounter = deliveryCounter });
+                    return;
+                }
             }
         }
+        // delivery failed
+        OnRecipeFailed?.Invoke(this, new OnRecipeDeliveryArgs { deliveryCounter = deliveryCounter });
     }
 
     public List<DeliveryRecipeSO> GetWaitingRecipeSOList()
