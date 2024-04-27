@@ -26,7 +26,7 @@ public class MainMenuUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        _playBtn.Select();
     }
 
     // Update is called once per frame

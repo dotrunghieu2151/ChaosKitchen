@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 
 public class OptionUI : MonoBehaviour
 {
+    public event EventHandler OnClose;
     [SerializeField] private Button _soundEffectBtn;
     [SerializeField] private Button _musicBtn;
     [SerializeField] private Button _closeBtn;
@@ -43,6 +45,7 @@ public class OptionUI : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+        _soundEffectBtn.Select();
     }
 
     public void Hide()
@@ -67,6 +70,7 @@ public class OptionUI : MonoBehaviour
         _closeBtn.onClick.AddListener(() =>
         {
             Hide();
+            OnClose?.Invoke(this, EventArgs.Empty);
         });
 
         _moveUpBtn.onClick.AddListener(() =>

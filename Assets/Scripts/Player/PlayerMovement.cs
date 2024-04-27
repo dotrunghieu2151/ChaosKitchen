@@ -128,7 +128,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
         {
             // check if can move X
             Vector3 moveX = new Vector3(transformVector3d.x, 0f, 0f).normalized;
-            canMove = moveX.x != 0 && CanMove(moveX, moveDistance);
+            canMove = (moveX.x < -0.5f || moveX.x > 0.5f) && CanMove(moveX, moveDistance);
             if (canMove)
             {
                 transformVector3d = moveX;
@@ -137,7 +137,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
             {
                 // check if can move Z
                 Vector3 moveZ = new Vector3(0f, 0f, transformVector3d.z).normalized;
-                canMove = moveZ.z != 0 && CanMove(moveZ, moveDistance);
+                canMove = (moveX.z < -0.5f || moveX.z > 0.5f) && CanMove(moveZ, moveDistance);
                 if (canMove)
                 {
                     transformVector3d = moveZ;
