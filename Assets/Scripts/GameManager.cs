@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public event EventHandler OnStateChanged;
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnpaused;
     public static GameManager Instance { get; private set; }
     private enum State
     {
@@ -23,6 +25,8 @@ public class GameManager : MonoBehaviour
     private float _gamePlayTimer;
     [SerializeField] private float _gamePlayTimerMax = 10f;
 
+    private bool _isGamePause = false;
+
     public bool IsGamePlaying()
     {
         return _state == State.GamePlaying;
@@ -36,6 +40,11 @@ public class GameManager : MonoBehaviour
     public bool IsGameOver()
     {
         return _state == State.GameOver;
+    }
+
+    public bool IsGamePaused()
+    {
+        return _isGamePause;
     }
 
     public float GetCountdownToStartTimer()
@@ -55,7 +64,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        GameInput.Instance.OnPauseAction += (sender, args) =>
+        {
+            TogglePauseGame();
+        };
     }
 
     // Update is called once per frame
@@ -101,6 +113,21 @@ public class GameManager : MonoBehaviour
                 {
                     break;
                 }
+        }
+    }
+
+    public void TogglePauseGame()
+    {
+        _isGamePause = !_isGamePause;
+        if (_isGamePause)
+        {
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
 }

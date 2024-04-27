@@ -6,6 +6,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 {
     public static event EventHandler OnPlayerPickup;
+
+    public static void ResetStaticData()
+    {
+        OnPlayerPickup = null;
+    }
     public static PlayerMovement Instance
     {
         get;
@@ -17,8 +22,6 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
         public BaseCounter selectedCounter;
     }
     [SerializeField] private float _movementSpeed = 10f;
-    [SerializeField] private GameInput _gameInput;
-
     [SerializeField] private float _playerRadius = 0.2f;
     [SerializeField] private float _playerHeight = 2f;
     [SerializeField] private float _interactDistance = 2f;
@@ -43,8 +46,8 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     // Start is called before the first frame update
     void Start()
     {
-        _gameInput.OnInteractAction += GameInput_OnInteractionAction;
-        _gameInput.OnInteractAlternateAction += GameInput_OnInteractionAlternateAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractionAction;
+        GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractionAlternateAction;
     }
 
     private void GameInput_OnInteractionAction(object sender, System.EventArgs e)
@@ -80,7 +83,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 
     private void HandleInteraction()
     {
-        Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 transformVector3d = new(inputVector.x, 0f, inputVector.y);
 
@@ -113,7 +116,7 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 
     private void HandleMovement()
     {
-        Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 transformVector3d = new(inputVector.x, 0f, inputVector.y);
 
