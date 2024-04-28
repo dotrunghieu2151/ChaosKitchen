@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
+    public event EventHandler OnRebindBinding;
     public enum Binding
     {
         MoveUp,
@@ -195,6 +196,9 @@ public class GameInput : MonoBehaviour
                 onActionRebound();
 
                 PlayerPrefs.SetString(PLAYER_PREFS_INPUT_BINDINGS, _playerInputAction.SaveBindingOverridesAsJson());
+                PlayerPrefs.Save();
+
+                OnRebindBinding?.Invoke(this, EventArgs.Empty);
             })
             .Start();
     }
