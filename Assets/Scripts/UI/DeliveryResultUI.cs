@@ -38,7 +38,6 @@ public class DeliveryResultUI : MonoBehaviour
 
         DeliveryManager.Instance.OnRecipeFailed += (s, e) =>
         {
-            Debug.Log("HERE");
             gameObject.SetActive(true);
             _backgroundImage.color = _failColor;
             _iconImage.sprite = _failSprite;

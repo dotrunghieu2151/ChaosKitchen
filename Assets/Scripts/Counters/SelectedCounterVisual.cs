@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,23 @@ public class SelectedCounterVisual : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerMovement.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        if (PlayerMovement.LocalInstance != null)
+        {
+            PlayerMovement.LocalInstance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        }
+        else
+        {
+            PlayerMovement.OnAnyPlayerSpawn += Player_OnAnyPlayerSpawned;
+        }
+    }
+
+    private void Player_OnAnyPlayerSpawned(object sender, EventArgs e)
+    {
+        if (PlayerMovement.LocalInstance != null)
+        {
+            PlayerMovement.LocalInstance.OnSelectedCounterChanged -= Player_OnSelectedCounterChanged;
+            PlayerMovement.LocalInstance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        }
     }
 
     // Update is called once per frame

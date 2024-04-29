@@ -1,17 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
+public class PlayerMovement : NetworkBehaviour, IKitchenObjectParent
 {
+    public static event EventHandler OnAnyPlayerSpawn;
     public static event EventHandler OnPlayerPickup;
 
     public static void ResetStaticData()
     {
         OnPlayerPickup = null;
+        OnAnyPlayerSpawn = null;
     }
-    public static PlayerMovement Instance
+    public static PlayerMovement LocalInstance
     {
         get;
         private set;
@@ -36,11 +40,20 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
 
     private void Awake()
     {
-        if (Instance != null)
+        // if (Instance != null)
+        // {
+        //     Debug.LogError("THIS SHOUDL NOT HAPPEND ONlY ONE PLAYER");
+        // }
+        // Instance = this;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
         {
-            Debug.LogError("THIS SHOUDL NOT HAPPEND ONlY ONE PLAYER");
+            LocalInstance = this;
         }
-        Instance = this;
+        OnAnyPlayerSpawn?.Invoke(this, EventArgs.Empty);
     }
 
     // Start is called before the first frame update
@@ -77,6 +90,10 @@ public class PlayerMovement : MonoBehaviour, IKitchenObjectParent
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         HandleMovement();
         HandleInteraction();
     }

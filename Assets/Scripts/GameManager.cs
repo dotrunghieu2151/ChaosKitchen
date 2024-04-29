@@ -19,10 +19,10 @@ public class GameManager : MonoBehaviour
 
     private State _state;
 
-    [SerializeField] private float _countdownToStartTimer = 3f;
+    [SerializeField] private float _countdownToStartTimer = 1f;
 
     private float _gamePlayTimer;
-    [SerializeField] private float _gamePlayTimerMax = 10f;
+    [SerializeField] private float _gamePlayTimerMax = 300f;
 
     private bool _isGamePause = false;
 
@@ -76,6 +76,10 @@ public class GameManager : MonoBehaviour
                 OnStateChanged?.Invoke(this, EventArgs.Empty);
             }
         };
+
+        // DEBUG trigger gameto play
+        _state = State.CountdownToStart;
+        OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     // Update is called once per frame
