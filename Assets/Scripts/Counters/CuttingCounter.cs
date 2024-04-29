@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CuttingCounter : BaseCounter, IHasProgress
@@ -38,7 +39,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             {
                 // player carrying sth
                 parent.GetKitchenObject().SetParent(this);
-                UpdateProgress(0, recipe.cuttingProgressMax);
+                InteractLogicPlaceObjectOnCuttingCounterServerRpc();
             }
             else
             {
@@ -55,7 +56,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
                     // player holding a plate, place onto the plate
                     if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                     {
-                        GetKitchenObject().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
                     };
                 }
             }
@@ -76,21 +77,55 @@ public class CuttingCounter : BaseCounter, IHasProgress
             {
                 return;
             }
-            UpdateProgress(_cuttingProgress + 1, recipe.cuttingProgressMax);
+            CutObjectServerRpc(parent.GetNetworkObject());
+            TestCuttingProgressDoneServerRpc(parent.GetNetworkObject());
+        }
+    }
 
-            if (_cuttingProgress != recipe.cuttingProgressMax)
-            {
-                return;
-            }
+    [ServerRpc(RequireOwnership = false)]
+    private void CutObjectServerRpc(NetworkObjectReference parentRef)
+    {
+        CutObjectClientRpc(parentRef);
+    }
 
+    [ClientRpc]
+    private void CutObjectClientRpc(NetworkObjectReference parentRef)
+    {
+        RecipeSO recipe = GetRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+        UpdateProgress(_cuttingProgress + 1, recipe.cuttingProgressMax);
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void TestCuttingProgressDoneServerRpc(NetworkObjectReference parentRef)
+    {
+        RecipeSO recipe = GetRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+        if (_cuttingProgress != recipe.cuttingProgressMax)
+        {
+            return;
+        }
+
+        if (parentRef.TryGet(out NetworkObject parentNetworkObject))
+        {
+            IKitchenObjectParent parent = parentNetworkObject.GetComponent<IKitchenObjectParent>();
             if (!parent.HasKitchenObject() && recipe.output != null)
             {
-                GetKitchenObject().DestroySelf();
+                KitchenObject.DestroyKitchenObject(GetKitchenObject());
                 KitchenObject.SpawnKitchenObject(recipe.output, this);
             }
-
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractLogicPlaceObjectOnCuttingCounterServerRpc()
+    {
+        InteractLogicPlaceObjectOnCuttingCounterClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractLogicPlaceObjectOnCuttingCounterClientRpc()
+    {
+        _cuttingProgress = 0;
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0f });
     }
 
     private void UpdateProgress(int progress, int max)

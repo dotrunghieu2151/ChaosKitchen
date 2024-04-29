@@ -219,6 +219,11 @@ public class PlayerMovement : NetworkBehaviour, IKitchenObjectParent
     {
         return _kitchenObjectHoldPoint;
     }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
 }
 
 public enum MovementState

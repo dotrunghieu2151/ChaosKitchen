@@ -211,6 +211,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ContainerCounter_Cabbage
       objectReference: {fileID: 0}
+    - target: {fileID: 4500268282638943789, guid: 208a875dbb114514f9e188515e203c0d,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4268970968
+      objectReference: {fileID: 0}
     - target: {fileID: 7169682904602050199, guid: 208a875dbb114514f9e188515e203c0d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2188,6 +2193,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CuttingCounter (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 0e78b1d88174a5949ad3853da22b91d6,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4248977946
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2678,6 +2688,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClearCounter (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 662021d3581bddd49adad4d9d1c02baf,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3292782556
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3661,6 +3676,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlateCounter
+      objectReference: {fileID: 0}
+    - target: {fileID: 2789716442813412070, guid: 5b0afb461e64049e783ba41970a2ecec,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1196952391
       objectReference: {fileID: 0}
     - target: {fileID: 8916264039696140892, guid: 5b0afb461e64049e783ba41970a2ecec,
         type: 3}
@@ -5013,6 +5033,74 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721762137}
   m_CullTransparentMesh: 1
+--- !u!1 &734850068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 734850070}
+  - component: {fileID: 734850071}
+  - component: {fileID: 734850069}
+  m_Layer: 0
+  m_Name: KitchenObjectMultiplayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &734850069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734850068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150dcb9484dd1f4449f5c2db6d45b993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _kitchenObjectSOList: {fileID: 11400000, guid: cbeb6712714cade4f82eb2c38ab9856d,
+    type: 2}
+--- !u!4 &734850070
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734850068}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8535585, y: -2.481113, z: 7.908439}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &734850071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734850068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4206047036
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &745203252
 GameObject:
   m_ObjectHideFlags: 0
@@ -7472,6 +7560,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ContainerCounter_MeatPattyUncooked
       objectReference: {fileID: 0}
+    - target: {fileID: 4500268282638943789, guid: 698c8b292a60ba645abc83141305f9b9,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 558855603
+      objectReference: {fileID: 0}
     - target: {fileID: 7169682904602050199, guid: 698c8b292a60ba645abc83141305f9b9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7539,6 +7632,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ContainerCounter_Bread
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500268282638943789, guid: d1b673e9306c8d64c97c7796895f16b4,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1536447567
       objectReference: {fileID: 0}
     - target: {fileID: 7169682904602050199, guid: d1b673e9306c8d64c97c7796895f16b4,
         type: 3}
@@ -8072,6 +8170,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CuttingCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 0e78b1d88174a5949ad3853da22b91d6,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 54858471
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -8293,6 +8396,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1542237174}
     m_Modifications:
+    - target: {fileID: 2234412039157616629, guid: 33c05d3e77e17a84a99e320a44f1fc85,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1347327989
+      objectReference: {fileID: 0}
     - target: {fileID: 2767718114427013897, guid: 33c05d3e77e17a84a99e320a44f1fc85,
         type: 3}
       propertyPath: m_Name
@@ -8939,6 +9047,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClearCounter (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 662021d3581bddd49adad4d9d1c02baf,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3359816345
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10209,6 +10322,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoveCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 2433030016763441073, guid: 05c4b840a05ea47b7a8d231bb91e3f0e,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 232424565
+      objectReference: {fileID: 0}
     - target: {fileID: 8991477739308717835, guid: 05c4b840a05ea47b7a8d231bb91e3f0e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11200,6 +11318,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ClearCounter (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 662021d3581bddd49adad4d9d1c02baf,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2823750399
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11658,6 +11781,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1542237174}
     m_Modifications:
+    - target: {fileID: 2234412039157616629, guid: 33c05d3e77e17a84a99e320a44f1fc85,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3703724013
+      objectReference: {fileID: 0}
     - target: {fileID: 2767718114427013897, guid: 33c05d3e77e17a84a99e320a44f1fc85,
         type: 3}
       propertyPath: m_Name
@@ -13418,6 +13546,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrashCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 78f098ca4e7ee4278b47651e21f701fd,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2572385399
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13620,6 +13753,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ClearCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 7641622225551930822, guid: 662021d3581bddd49adad4d9d1c02baf,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2465136691
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13645,3 +13783,4 @@ SceneRoots:
   - {fileID: 1536319586}
   - {fileID: 745203253}
   - {fileID: 1020324801}
+  - {fileID: 734850070}

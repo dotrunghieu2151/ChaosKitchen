@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IKitchenObjectParent
@@ -10,4 +11,6 @@ public interface IKitchenObjectParent
     public bool HasKitchenObject();
 
     public Transform GetChildAnchor();
+
+    public NetworkObject GetNetworkObject();
 }

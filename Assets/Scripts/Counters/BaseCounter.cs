@@ -64,4 +64,9 @@ public class BaseCounter : NetworkBehaviour, IKitchenObjectParent
   {
     return GetTopPoint();
   }
+
+  public NetworkObject GetNetworkObject()
+  {
+    return NetworkObject;
+  }
 }
