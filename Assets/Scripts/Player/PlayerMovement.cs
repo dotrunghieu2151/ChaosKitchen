@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -30,13 +31,17 @@ public class PlayerMovement : NetworkBehaviour, IKitchenObjectParent
     [SerializeField] private float _playerHeight = 2f;
     [SerializeField] private float _interactDistance = 2f;
     [SerializeField] private LayerMask _countersLayerMask;
+    [SerializeField] private LayerMask _collisionsLayerMask;
     [SerializeField] private Transform _kitchenObjectHoldPoint;
+    [SerializeField] private List<Vector3> _spawnPositionList;
 
     private Vector3 _lastInteractDirection;
 
     private MovementState _movementState = MovementState.idle;
     private BaseCounter _selectedCounter;
     private KitchenObject _kitchenObject;
+
+    private CinemachineVirtualCamera vcam;
 
     private void Awake()
     {
@@ -52,7 +57,10 @@ public class PlayerMovement : NetworkBehaviour, IKitchenObjectParent
         if (IsOwner)
         {
             LocalInstance = this;
+            GameManager.Instance.SetCameraPlayerTarget(this);
+
         }
+        transform.position = _spawnPositionList[(int)OwnerClientId];
         OnAnyPlayerSpawn?.Invoke(this, EventArgs.Empty);
     }
 
@@ -175,7 +183,7 @@ public class PlayerMovement : NetworkBehaviour, IKitchenObjectParent
 
     private bool CanMove(Vector3 transformVector, float moveDistance)
     {
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * _playerHeight, _playerRadius, transformVector, moveDistance);
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * _playerRadius, transformVector, Quaternion.identity, moveDistance, _collisionsLayerMask);
 
         return canMove;
     }

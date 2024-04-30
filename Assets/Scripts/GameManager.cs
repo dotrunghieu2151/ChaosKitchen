@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -23,8 +24,14 @@ public class GameManager : MonoBehaviour
 
     private float _gamePlayTimer;
     [SerializeField] private float _gamePlayTimerMax = 300f;
+    [SerializeField] private CinemachineVirtualCamera _vcam;
 
     private bool _isGamePause = false;
+
+    public void SetCameraPlayerTarget(PlayerMovement player)
+    {
+        _vcam.Follow = player.gameObject.transform;
+    }
 
     public bool IsGamePlaying()
     {
