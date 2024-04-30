@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
+
+    public event EventHandler OnLocalPlayerReady;
     public event EventHandler OnStateChanged;
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
@@ -18,11 +21,14 @@ public class GameManager : MonoBehaviour
         GameOver
     }
 
-    private State _state;
+    private NetworkVariable<State> _state = new NetworkVariable<State>(State.WaitingToStart);
+    private bool _isLocalPlayerReady;
 
-    [SerializeField] private float _countdownToStartTimer = 1f;
+    private Dictionary<ulong, bool> _playerReadyDict;
 
-    private float _gamePlayTimer;
+    [SerializeField] private NetworkVariable<float> _countdownToStartTimer = new NetworkVariable<float>(3f);
+
+    private NetworkVariable<float> _gamePlayTimer = new NetworkVariable<float>(300f);
     [SerializeField] private float _gamePlayTimerMax = 300f;
     [SerializeField] private CinemachineVirtualCamera _vcam;
 
@@ -35,17 +41,17 @@ public class GameManager : MonoBehaviour
 
     public bool IsGamePlaying()
     {
-        return _state == State.GamePlaying;
+        return _state.Value == State.GamePlaying;
     }
 
     public bool IsCountdownToStart()
     {
-        return _state == State.CountdownToStart;
+        return _state.Value == State.CountdownToStart;
     }
 
     public bool IsGameOver()
     {
-        return _state == State.GameOver;
+        return _state.Value == State.GameOver;
     }
 
     public bool IsGamePaused()
@@ -55,17 +61,23 @@ public class GameManager : MonoBehaviour
 
     public float GetCountdownToStartTimer()
     {
-        return _countdownToStartTimer;
+        return _countdownToStartTimer.Value;
+    }
+
+    public bool IsLocalPlayerReady()
+    {
+        return _isLocalPlayerReady;
     }
 
     public float GetGamePlayingTimerNormalize()
     {
-        return 1 - (_gamePlayTimer / _gamePlayTimerMax);
+        return 1 - (_gamePlayTimer.Value / _gamePlayTimerMax);
     }
+
     private void Awake()
     {
         Instance = this;
-        _state = State.WaitingToStart;
+        _playerReadyDict = new Dictionary<ulong, bool>();
     }
     // Start is called before the first frame update
     void Start()
@@ -77,22 +89,51 @@ public class GameManager : MonoBehaviour
 
         GameInput.Instance.OnInteractAction += (sender, args) =>
         {
-            if (_state == State.WaitingToStart)
+            if (_state.Value == State.WaitingToStart)
             {
-                _state = State.CountdownToStart;
-                OnStateChanged?.Invoke(this, EventArgs.Empty);
+                _isLocalPlayerReady = true;
+                OnLocalPlayerReady?.Invoke(this, EventArgs.Empty);
+                SetPlayerReadyServerRpc();
             }
         };
 
-        // DEBUG trigger gameto play
-        _state = State.CountdownToStart;
-        OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    public override void OnNetworkSpawn()
+    {
+        _state.OnValueChanged += (State prev, State newVal) =>
+        {
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        };
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        _playerReadyDict[serverRpcParams.Receive.SenderClientId] = true;
+
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!_playerReadyDict.ContainsKey(clientId) || !_playerReadyDict[clientId])
+            {
+                // not all players are ready
+                return;
+            }
+        }
+
+        // all players are ready
+        _state.Value = State.CountdownToStart;
+    }
+
 
     // Update is called once per frame
     void Update()
     {
-        switch (_state)
+        if (!IsServer)
+        {
+            return;
+        }
+        switch (_state.Value)
         {
             case State.WaitingToStart:
                 {
@@ -101,23 +142,22 @@ public class GameManager : MonoBehaviour
 
             case State.CountdownToStart:
                 {
-                    _countdownToStartTimer -= Time.deltaTime;
-                    if (_countdownToStartTimer <= 0f)
+                    _countdownToStartTimer.Value -= Time.deltaTime;
+                    if (_countdownToStartTimer.Value <= 0f)
                     {
-                        _state = State.GamePlaying;
-                        _gamePlayTimer = _gamePlayTimerMax;
-                        OnStateChanged?.Invoke(this, EventArgs.Empty);
+                        _state.Value = State.GamePlaying;
+                        _gamePlayTimer.Value = _gamePlayTimerMax;
+
                     }
                     break;
                 }
 
             case State.GamePlaying:
                 {
-                    _gamePlayTimer -= Time.deltaTime;
-                    if (_gamePlayTimer <= 0f)
+                    _gamePlayTimer.Value -= Time.deltaTime;
+                    if (_gamePlayTimer.Value <= 0f)
                     {
-                        _state = State.GameOver;
-                        OnStateChanged?.Invoke(this, EventArgs.Empty);
+                        _state.Value = State.GameOver;
                     }
                     break;
                 }

@@ -19,9 +19,9 @@ public class TutorialUI : MonoBehaviour
         {
             UpdateVisual();
         };
-        GameManager.Instance.OnStateChanged += (sender, args) =>
+        GameManager.Instance.OnLocalPlayerReady += (sender, args) =>
         {
-            if (GameManager.Instance.IsCountdownToStart())
+            if (GameManager.Instance.IsLocalPlayerReady())
             {
                 Hide();
             }
